@@ -1,0 +1,114 @@
+game.module(
+    'game.AI'
+)
+.body(function() {
+
+/*
+ *	A player class will hold all the current infomation for this player
+ */
+game.createClass('AI', {
+
+	Side: 'Away',	// default set player is home
+
+	Score: 0,
+
+	currentOffence: false,
+
+	pile: null,	// pile stack all left cards
+
+	Referee: 0,
+	HomePass: 1,
+	HomeLeftShot: 2,
+	HomeRightShot: 3,
+	HomeIntercept: 4,
+	HomeLeftBlock: 5,
+	HomeRightBlock: 6,
+	AwayPass: 11,
+	AwayLeftShot: 12,
+	AwayRightShot: 13,
+	AwayIntercept: 14,
+	AwayLeftBlock: 15,
+	AwayRightBlock: 16,
+
+	cards: {
+		DFK: 0,	// direct free kick
+		HP: 0,	// home pass
+		HLS: 0,	// home left goal shot
+		HRS: 0,	// home right goal shot
+		HI: 0,	// home intercept
+		HLB: 0,	// home left goal block
+		HRB: 0,	// home right goal block
+		AP: 0,	// away pass
+		ALS: 0,	// away left goal shot
+		ARS: 0,	// away right goal shot
+		AI: 0,	// away intercept
+		ALB: 0,	// away left goal block
+		ARB: 0	// away right goal block
+	},
+	/* this part is easy use to determine if AI hold this kind of card,
+	 * which will help to make the code much simple!!!!!!!!
+	 */
+	
+
+	LastPick: null,	// hold last card that AI used
+
+	GoalThisTurn: false,
+
+	init: function(HomeSide){
+		console.log('Current AI side:' + HomeSide);
+		if(HomeSide){
+			this.Side = 'Home';
+			this.switchToOffence();
+			this.homeAI();
+			this.pile = new game.Pile('Home', this.cards);
+		}else{
+			this.Side = 'Away';
+			this.switchToDeffence();
+			this.awayAI();
+			this.pile = new game.Pile('Away', this.cards);
+		}
+
+		// push the position of all the cards to each array that hold this type
+		for(var i = 0; i < this.cards.length; i++){
+			console.log('Cards['+i+']: '+ this.cards[i]);
+			this.pushHold(this.cards[i], i);
+		}
+		
+	},
+
+	homeAI: function(){
+		// need to draw 2 Deffence card and 4 offence card randomly
+		var n;
+		// 4 offence cards
+		for(var i = 0; i < 4; i++){
+			n = ~~Math.randomBetween(1, 28);
+			if(n <= 17)			this.cards.push(this.HomePass);
+			else if(n <= 22)	this.cards.push(this.HomeLeftShot);
+			else 			 	this.cards.push(this.HomeRightShot);
+		}
+		// then 2 defence cards
+		this.cards.push(~~Math.randomBetween(4, 7));
+		this.cards.push(~~Math.randomBetween(4, 7));
+		
+	},
+
+	awayAI: function(){
+		// need to draw 2 Deffence card and 4 offence card randomly
+		var n;
+		// 4 offence cards
+		for(var i = 0; i < 4; i++){
+			n = ~~Math.randomBetween(1, 28);
+			if(n <= 17)			this.cards.push(this.AwayPass);
+			else if(n <= 22) 	this.cards.push(this.AwayLeftShot);
+			else 			 	this.cards.push(this.AwayRightShot);
+		}
+		// then 2 defence cards
+		this.cards.push(~~Math.randomBetween(14, 17));
+		this.cards.push(~~Math.randomBetween(14, 17));
+
+	},
+
+});
+
+
+});
